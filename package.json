@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "description": "hatchways backend assessment with express",
   "main": "src/index.js",
+  "type":"module",
   "scripts": {
     "install": "npm install",
     "build": "babel src -d dist",
     "dev": "nodemon src/server.js",
-    "start": "nodemon --exec babel-node src/server.js"
+    "start": "nodemon --exec babel-node --experimental-specifier-resolution=node src/server.js",
+    "lint": "eslint --init"
   },
   "repository": {
     "type": "git",
@@ -20,6 +22,7 @@
   },
   "homepage": "https://github.com/SLO42/backend-assessment-NodejsExpress#readme",
   "dependencies": {
+    "axios": "^0.26.0",
     "express": "^4.17.2"
   },
   "devDependencies": {
