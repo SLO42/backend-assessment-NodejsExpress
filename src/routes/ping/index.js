@@ -6,8 +6,10 @@ const pingJSON = {
 	success: true,
 };
 
-router.get("/", (req, res) => {
+function pingRoute(_req, res){
 	res.json(pingJSON);
-});
+}
+
+router.get("/", pingRoute);
 
 export default router;

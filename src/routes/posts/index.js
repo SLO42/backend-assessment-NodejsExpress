@@ -1,20 +1,9 @@
 import {Router as expressRouter } from "express";
 import axios from "axios";
 import { validationResult } from "express-validator";
+import { hatchwaysBaseURL } from "../../config/hatchways";
 
 const router = expressRouter();
-
-// add middlewear check for 
-// tags (required Array<string>) default (N/A)
-// sortBy (string: id | reads | likes | popularity) default (id)
-// direction (string: desc | asc) default (asc)
-
-//let endpoints = [
-//     'https://api.github.com/users/ejirocodes',
-//     'https://api.github.com/users/ejirocodes/repos',
-//     'https://api.github.com/users/ejirocodes/followers',
-//     'https://api.github.com/users/ejirocodes/following'
-//   ];
 
 const sortPostsBy = (posts, sortBy, direction) => {  
 	if (!direction){
@@ -34,9 +23,6 @@ const sortPostsBy = (posts, sortBy, direction) => {
 	}
 };
 
-
-const tagsToEndpoint = (tag) => `https://api.hatchways.io/assessment/blog/posts?tag=${tag}`;
-
 router.get("/", (req, res) => {
 	const {tags, sortBy, direction} = req.query;
 	
@@ -50,7 +36,7 @@ router.get("/", (req, res) => {
 		res.send("please enter a valid tag");
 	} else {
 		const tagsArray = tags.split(",");
-		const endpoints = tagsArray.map(tag => tagsToEndpoint(tag));
+		const endpoints = tagsArray.map(tag => `${hatchwaysBaseURL}?tag=${tag}`);
 
 		Promise.all(endpoints.map((endpoint) => axios.get(endpoint))).then(
 			axios.spread(( ...data  ) => { 

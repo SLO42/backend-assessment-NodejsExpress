@@ -1,0 +1,1 @@
+export const hatchwaysBaseURL = "https://api.hatchways.io/assessment/blog/posts"; 
