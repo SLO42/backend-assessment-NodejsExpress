@@ -1,5 +1,6 @@
 import {Router as expressRouter } from "express";
 import axios from "axios";
+import { validationResult } from "express-validator";
 
 const router = expressRouter();
 
@@ -15,22 +16,21 @@ const router = expressRouter();
 //     'https://api.github.com/users/ejirocodes/following'
 //   ];
 
-const isAscending = (direction) => direction === "asc";
-
-const sortPostsBy = (posts, sortBy, direction) => {
+const sortPostsBy = (posts, sortBy, direction) => {  
 	if (!direction){
 		direction = "asc";
 	}
-	const isAsc = isAscending(direction);
+	const isAscending = direction === "asc";
+
 	switch (sortBy) {
 	case "reads":
-		return posts.sort((a, b) => (a.reads < b.reads) ? (isAsc ? -1 : 1) : (isAsc ? 1 : -1));
+		return posts.sort((a, b) => isAscending ? (a.reads < b.reads) ? -1 : 1 : (a.reads < b.reads) ? 1 : -1 );
 	case "likes":
-		return posts.sort((a, b) => (a.likes < b.likes) ? (isAsc ? -1 : 1) : (isAsc ? 1 : -1));
+		return posts.sort((a, b) => isAscending ? (a.likes < b.likes) ? -1 : 1 : (a.likes < b.likes) ? 1 : -1 );
 	case "popularity":
-		return posts.sort((a, b) => (a.popularity < b.popularity) ? (isAsc ? -1 : 1) : (isAsc ? 1 : -1));
+		return posts.sort((a, b) => isAscending ? (a.popularity < b.popularity) ? -1 : 1 : (a.popularity < b.popularity) ? 1 : -1 );
 	default:
-		return posts.sort((a, b) => (a.id < b.id) ? (isAsc ? -1 : 1) : (isAsc ? 1 : -1));
+		return posts.sort((a, b) => isAscending ? (a.id < b.id) ? -1 : 1 : (a.id < b.id) ? 1 : -1 );
 	}
 };
 
@@ -39,6 +39,11 @@ const tagsToEndpoint = (tag) => `https://api.hatchways.io/assessment/blog/posts?
 
 router.get("/", (req, res) => {
 	const {tags, sortBy, direction} = req.query;
+	
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ error: (errors.array())[0].msg });
+	}
 
 	// soft check for tags...
 	if (!tags) {
@@ -56,7 +61,6 @@ router.get("/", (req, res) => {
 					seen.add(post.id);
 					return !duplicate;
 				});
-				console.log(filteredPosts.length);
 				res.send({posts: sortPostsBy(filteredPosts, sortBy, direction)});
 			})
 		);
