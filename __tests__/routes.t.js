@@ -25,7 +25,7 @@ expect.extend({
 
 
 describe("(1): Testing Ping Route", () => {
-	test("a): responds to /api/ping", async () => {
+	test("(default 1): responds to /api/ping", async () => {
 		const res = await request(app).get("/ping");
 		expect(res.statusCode).toBe(200);
 		expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
@@ -54,6 +54,14 @@ describe("(2): Testing Post Route", () => {
 		expect(res.statusCode).toBe(400);
 		expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
 		expect(res.text).toEqual("{\"error\":\"direction parameter is invalid\"}");
+	});
+
+	test("(error 4): responds to /api/post?tags=", async () => {
+		const res = await request(app).get("/posts?tags=");
+
+		expect(res.statusCode).toBe(400);
+		expect(res.text).toEqual("{\"error\":\"Tags parameter is required\"}");
+		expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
 	});
 	
 	test("(default): responds to /api/post?tags=tech", async () => {
@@ -191,8 +199,25 @@ describe("(2): Testing Post Route", () => {
 		expect(posts[0].id).toBeGreaterThanOrEqual(posts[1].id);
 		expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
 	});
+});
 
+describe("(3): Testing Post Route for duplicates", () => { 
 
+	test("(tech and science): responds to /api/post?tags=tech,science", async () => {
+		const res = await request(app).get("/posts?tags=tech,science");
 
+		expect(res.statusCode).toBe(200);
+		const posts = (JSON.parse(res.text)).posts;
+		expect(posts).toBeDistinct();
+		expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
+	});
 
+	test("(history and science): responds to /api/post?tags=history,science", async () => {
+		const res = await request(app).get("/posts?tags=history,science");
+
+		expect(res.statusCode).toBe(200);
+		const posts = (JSON.parse(res.text)).posts;
+		expect(posts).toBeDistinct();
+		expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
+	});
 });
