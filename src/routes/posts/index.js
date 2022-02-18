@@ -1,7 +1,7 @@
 import {Router as expressRouter } from "express";
 import axios from "axios";
 import { validationResult } from "express-validator";
-import { hatchwaysBaseURL } from "../../config/hatchways";
+import { hatchwayInstance } from "../../axios";
 
 const router = expressRouter();
 
@@ -24,33 +24,28 @@ const sortPostsBy = (posts, sortBy, direction) => {
 };
 
 router.get("/", (req, res) => {
-	const {tags, sortBy, direction} = req.query;
-	
+
 	const errors = validationResult(req);
+
 	if (!errors.isEmpty()) {
 		return res.status(400).json({ error: (errors.array())[0].msg });
 	}
+	const {tags, sortBy, direction} = req.query;
+	const tagsArray = tags.split(",");
+	const endpoints = tagsArray.map(tag => `/assessment/blog/posts?tag=${tag}`);
 
-	// soft check for tags...
-	if (!tags) {
-		res.send("please enter a valid tag");
-	} else {
-		const tagsArray = tags.split(",");
-		const endpoints = tagsArray.map(tag => `${hatchwaysBaseURL}?tag=${tag}`);
-
-		Promise.all(endpoints.map((endpoint) => axios.get(endpoint))).then(
-			axios.spread(( ...data  ) => { 
-				const seen = new Set();
-				const posts = (data.map((item) => item.data.posts)).flat(2);
-				const filteredPosts = posts.filter((post) => { 
-					const duplicate = seen.has(post.id);
-					seen.add(post.id);
-					return !duplicate;
-				});
-				res.send({posts: sortPostsBy(filteredPosts, sortBy, direction)});
-			})
-		);
-	}
+	Promise.all(endpoints.map((endpoint) => hatchwayInstance.get(endpoint))).then(
+		axios.spread(( ...data  ) => { 
+			const seen = new Set();
+			const posts = (data.map((item) => item.data.posts)).flat(2);
+			const filteredPosts = posts.filter((post) => { 
+				const duplicate = seen.has(post.id);
+				seen.add(post.id);
+				return !duplicate;
+			});
+			res.status(200).json({posts: sortPostsBy(filteredPosts, sortBy, direction)});
+		})
+	);
 });
 
 export default router;
