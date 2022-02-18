@@ -211,9 +211,16 @@ describe("(3): Testing Post Route for duplicates", () => {
 		expect(posts).toBeDistinct();
 		expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
 	});
-
 	test("(history and science): responds to /api/post?tags=history,science", async () => {
 		const res = await request(app).get("/posts?tags=history,science");
+
+		expect(res.statusCode).toBe(200);
+		const posts = (JSON.parse(res.text)).posts;
+		expect(posts).toBeDistinct();
+		expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
+	});
+	test("(everything): responds to /api/post?tags=science,politics,tech,culture,design,health,startups&sortBy=likes&direction=desc", async () => {
+		const res = await request(app).get("/posts?tags=science,politics,tech,culture,design,health,startups&sortBy=likes&direction=desc");
 
 		expect(res.statusCode).toBe(200);
 		const posts = (JSON.parse(res.text)).posts;
