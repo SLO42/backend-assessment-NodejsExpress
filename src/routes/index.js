@@ -1,12 +1,12 @@
-import { Router as expressRouter } from "express";
-import PingRoute from "./ping";
-import PostsRoute from "./posts";
-import {validatePostRequest} from "../middlewares/postsValidators";
+import { Router } from "express";
+import TicketRoute from "./tickets/index.js";
+import FlightRoute from "./flights/index.js";
+import {validateTicketRequest, validateFlightsRequest} from "../middlewares/validators.js";
 
-const router = expressRouter();
+const router = Router();
 
-router.use("/ping", PingRoute);
-router.use("/posts", validatePostRequest, PostsRoute);
+router.use("/tickets", validateTicketRequest, TicketRoute);
+router.use("/flights", validateFlightsRequest, FlightRoute);
 
 
 export default router;

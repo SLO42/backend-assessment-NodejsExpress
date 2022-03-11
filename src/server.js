@@ -1,9 +1,10 @@
 import express from "express";
-import api from "./routes";
+import ApiRoutes from "./routes/index.js";
 
 const app = express();
 const port = 80;
+app.use(express.json());
 
-app.use("/api", api);
+app.use("/api", ApiRoutes);
 
 app.listen(port);
