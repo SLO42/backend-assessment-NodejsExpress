@@ -1,6 +1,9 @@
 {
   "name": "hatchways",
   "version": "1.0.0",
+  "engines": {
+		"node": "17.5"
+	},
   "description": "hatchways backend assessment with express",
   "main": "src/index.js",
   "type": "module",
@@ -22,7 +25,6 @@
   },
   "homepage": "https://github.com/SLO42/backend-assessment-NodejsExpress#readme",
   "dependencies": {
-    "axios": "^0.26.0",
     "express": "^4.17.2",
     "express-validator": "^6.14.0"
   },
