@@ -59,14 +59,11 @@ router.get("/", async (req, res) => {
 
 	Object.keys(flightObjs).map((key) => {
 		const date = key.slice(0, 10);
-		const flightNumber = key.slice(11);
-		console.log(date,flightNumber);
 		const index = flights.findIndex(e => e.date === date);
 		flightObjs[key].occupiedSeats = flightObjs[key].occupiedSeats.sort(sortAlphaNum);
 		flights[index].flights.push({  ...flightObjs[key]});
 	});
 	const result = {dates: flights};
-	console.log(result);
 	res.status(200).json(result);
 });
 

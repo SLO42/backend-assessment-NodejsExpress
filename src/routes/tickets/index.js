@@ -18,7 +18,6 @@ async function ticketRoute(req, res){
 	const errors = validationResult(req);
 
 	if (!errors.isEmpty()) {
-		// return res.status(400).json({ status: "failed", errors: errors.array() });
 		return res.status(400).json({ status: "failed", error: (errors.array())[0].msg });
 	}
 	await addTicket(newTicket(req.body));

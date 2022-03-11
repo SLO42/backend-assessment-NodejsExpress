@@ -7,4 +7,8 @@ app.use(express.json());
 
 app.use("/api", ApiRoutes);
 
-app.listen(port);
+if (process.env.NODE_ENV !== "test"){
+	app.listen(port);
+}
+
+export default app;

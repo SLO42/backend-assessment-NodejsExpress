@@ -6,7 +6,12 @@ const require = createRequire(import.meta.url);
 
 
 /** @type {Array} */
-let tickets = await require(fileName);
+let tickets;
+try {
+	tickets = await require(fileName);
+} catch {
+	writeJSONFile("./src/data/tickets.json", []);
+}
 
 /**
  *  finds ticket with id.

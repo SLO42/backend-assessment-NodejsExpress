@@ -3,7 +3,7 @@ import { findSeatWithFlightNumber, findIdInTickets } from "../data/ticket_api.js
 
 const FAILED_BY_TICKET_ID_EXISTS = "ticketId already exists";
 const FAILED_BY_TICKET_ID_REQUIRED = "ticketId is required";
-const FAILED_BY_SEAT_NUMBER_EXISTS = "seatNumber already exists";
+const FAILED_BY_SEAT_NUMBER_EXISTS = "seatNumber already taken";
 const FAILED_BY_SEAT_NUMBER_REQUIRED = "seatNumber is required";
 const FAILED_BY_FLIGHT_NUMBER_REQUIRED = "flightNumber is required";
 const FAILED_BY_START_DATE_BAD_FORMAT = "startDate format is invalid";
